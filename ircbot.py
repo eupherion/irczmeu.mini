@@ -54,7 +54,9 @@ class Config:
 
 
 def tbytes(s):
-	return s.encode("utf-8")
+    if not isinstance(s, str):
+        raise TypeError("Input must be a string")
+    return s.encode("utf-8")
 
 def handle_ctcp_version(source):
 	# Отправляем ответ на CTCP VERSION
