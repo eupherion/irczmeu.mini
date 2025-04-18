@@ -35,22 +35,39 @@ class Config:
         """
         Выводит значения всех атрибутов объекта класса.
         """
+            # Максимальная длина строки до двоеточия
+        max_key_length = max(
+            len("Host"),
+            len("Port"),
+            len("Password"),
+            len("User"),
+            len("Nickname"),
+            len("Real Name"),
+            len("Nickserv Password"),
+            len("Channel"),
+            len("Admin"),
+            len("Auto Connect"),
+            len("Command Symbol"),
+            len("Reconnect"),
+            len("DCC Version")
+        )
+
         print("=== IRC Server Configuration ===")
-        print(f"Host: {self.host}")
-        print(f"Port: {self.port}")
-        print(f"Password: {self.pswd}")
+        print(f"{'Host':<{max_key_length}}: {self.host}")
+        print(f"{'Port':<{max_key_length}}: {self.port}")
+        print(f"{'Password':<{max_key_length}}: {self.pswd}")
 
         print("\n=== IRC Client Configuration ===")
-        print(f"User: {self.user}")
-        print(f"Nickname: {self.nick}")
-        print(f"Real Name: {self.rnam}")
-        print(f"Nickserv Password: {self.nspw}")
-        print(f"Channel: {self.chan}")
-        print(f"Admin: {self.admi}")
-        print(f"Auto Connect: {self.acon}")
-        print(f"Command Symbol: {self.csym}")
-        print(f"Reconnect: {self.rcon}")
-        print(f"DCC Version: {self.dccv}")
+        print(f"{'User':<{max_key_length}}: {self.user}")
+        print(f"{'Nickname':<{max_key_length}}: {self.nick}")
+        print(f"{'Real Name':<{max_key_length}}: {self.rnam}")
+        print(f"{'Nickserv Password':<{max_key_length}}: {self.nspw}")
+        print(f"{'Channel':<{max_key_length}}: {self.chan}")
+        print(f"{'Admin':<{max_key_length}}: {self.admi}")
+        print(f"{'Auto Connect':<{max_key_length}}: {self.acon}")
+        print(f"{'Command Symbol':<{max_key_length}}: {self.csym}")
+        print(f"{'Reconnect':<{max_key_length}}: {self.rcon}")
+        print(f"{'DCC Version':<{max_key_length}}: {self.dccv}")
 
 
 def tbytes(s):
