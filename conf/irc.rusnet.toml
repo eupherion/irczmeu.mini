@@ -1,0 +1,18 @@
+# Конфигурационный файл для IRC-клиента
+
+[ircServer]	# Параметры IRC сервера
+ircServerHost = "irc.tambov.ru"    # Адрес сервера IRC
+ircServerPort = 6660               # Порт сервера IRC
+ircServerPass = ""                 # Пароль IRC сервера (ZNC)
+
+[ircClient] # Параметры IRC клиента
+ircBotUser = "pybot"               # Имя пользователя бота
+ircBotNick = "PyBot"               # Ник бота
+ircBotRnam = "Python IRC Bot"      # Реально имя (RealName)
+ircBotNspw = "nickserv_pass"       # Пароль NickServ
+ircBotAcon = false                 # Флаг автозапуска (true/false)
+ircBotCsym = "."                   # Символ команды бота
+ircBotRcon = ""                    # Сообщения серверу при соединении
+ircBotDccv = "VERSION PyIRC Bot"   # Версия при CTCP запросе
+ircBotChan = ["#test", "#rand"]    # Каналы бота
+ircBotAdmi = ["BotMaster1", "admi"]# Ники администраторов
