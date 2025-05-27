@@ -1,18 +1,16 @@
-# Конфигурационный файл для IRC-клиента
+[ircServer]
+ircServerHost = "irc.rizon.net"
+ircServerPort = 7000
+ircServerPass = ""
 
-[ircServer] # Параметры IRC сервера
-ircServerHost = "irc.rizon.net"    # Адрес сервера IRC
-ircServerPort = 7000               # Порт сервера IRC
-ircServerPass = ""                 # Пароль IRC сервера (ZNC)
-
-[ircClient] # Параметры IRC клиента
-ircBotUser = "pybot"               # Имя пользователя бота
-ircBotNick = "PyBot"               # Ник бота
-ircBotRnam = "Python IRC Bot"      # Реально имя (RealName)
-ircBotNspw = "nickserv_pass"       # Пароль NickServ
-ircBotAcon = false                 # Флаг автозапуска (true/false)
-ircBotCsym = "!"                   # Символ команды бота
-ircBotRcon = ""                    # Сообщения серверу при соединении
-ircBotDccv = "VERSION PyIRC Bot"   # Версия при CTCP запросе
-ircBotChan = ["#test", "#rand"]    # Каналы бота
-ircBotAdmi = ["BotMaster1", "admi"]# Ники администраторов
+[ircClient]
+ircBotUser = "pybot"
+ircBotNick = "PyBot"
+ircBotRnam = "Python IRC Bot"
+ircBotNspw = ""
+ircBotAcon = true
+ircBotCsym = "!"
+ircBotRcon = ""
+ircBotDccv = "VERSION PyIRC Bot"
+ircBotChan = [ "#test", "#rand",]
+ircBotAdmi = [ "BotMaster1", "admi",]
