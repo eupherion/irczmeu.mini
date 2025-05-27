@@ -1,9 +1,10 @@
-#!/usr/bin/env python3
+# conf.py
 import toml
 import os
 
 class Config:
-    def __init__(self, config_dict):
+    def __init__(self, config_dict, config_path):
+        self.config_path = config_path
         self.host = config_dict.get("ircServer", {}).get("ircServerHost")
         self.port = config_dict.get("ircServer", {}).get("ircServerPort")
         self.pswd = config_dict.get("ircServer", {}).get("ircServerPass")
@@ -18,6 +19,33 @@ class Config:
         self.dccv = config_dict.get("ircClient", {}).get("ircBotDccv")
         self.chan = config_dict.get("ircClient", {}).get("ircBotChan", [])
         self.admi = config_dict.get("ircClient", {}).get("ircBotAdmi", [])
+
+    def save(self):
+        """Сохраняет текущие значения в файл"""
+        data = {
+            "ircServer": {
+                "ircServerHost": self.host,
+                "ircServerPort": self.port,
+                "ircServerPass": self.pswd,
+            },
+            "ircClient": {
+                "ircBotUser": self.user,
+                "ircBotNick": self.nick,
+                "ircBotRnam": self.rnam,
+                "ircBotNspw": self.nspw,
+                "ircBotAcon": self.acon,
+                "ircBotCsym": self.csym,
+                "ircBotRcon": self.rcon,
+                "ircBotDccv": self.dccv,
+                "ircBotChan": self.chan,
+                "ircBotAdmi": self.admi
+            }
+        }
+
+        with open(self.config_path, "w") as f:
+            toml.dump(data, f)
+
+        print(f"[CONF] Saving config to {self.config_path}")
 
     def print_config(self):
         # Максимальная длина строки до двоеточия
@@ -55,6 +83,7 @@ class Config:
         print(f"{'Admins':<{max_key_length}}: {self.admi}")
 
 
+
 def config_load(config_path):
     """
     Загружает конфигурацию из файла TOML.
@@ -65,6 +94,6 @@ def config_load(config_path):
     try:
         with open(config_path, "r") as f:
             config_data = toml.load(f)
-        return Config(config_data)
+        return Config(config_data, config_path)
     except Exception as e:
         raise RuntimeError(f"Error loading configuration from '{config_path}': {e}") from e

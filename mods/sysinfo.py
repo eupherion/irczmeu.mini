@@ -1,72 +1,55 @@
-import os
-from shlex import join
+# mods/sysinfo.py
 import time
+import psutil
 
-def read_cpu_usage():
-    with open("/proc/stat") as f:
-        line = f.readline()
-    parts = list(map(int, line.split()[1:]))
-    total = sum(parts)
-    idle = parts[3]
-    return total, idle
-
-def get_uptime():
-    with open("/proc/uptime") as f:
-        uptime_seconds = float(f.readline().split()[0])
-    return time.strftime("%H:%M:%S", time.gmtime(uptime_seconds)), int(uptime_seconds // 86400)
 
 def get_sysinfo():
-    # 1. Свободное место на диске
-    st = os.statvfs("/")
-    free = st.f_bavail * st.f_frsize
-    total = st.f_blocks * st.f_frsize
-    used = (st.f_blocks - st.f_bfree) * st.f_frsize
+    # 1. Свободное место на диске (корневая ФС)
+    disk = psutil.disk_usage('/')
+    disk_info = {
+        'total': f"{disk.total / (1024 ** 3):.2f} GB",
+        'used': f"{disk.used / (1024 ** 3):.2f} GB",
+        'free': f"{disk.free / (1024 ** 3):.2f} GB",
+        'percent': f"{disk.percent}%"
+    }
 
-    # 2. RAM
-    with open("/proc/meminfo") as f:
-        meminfo = f.readlines()
-    mem_total = int(meminfo[0].split()[1]) * 1024
-    mem_free = int(meminfo[1].split()[1]) * 1024
-    mem_available = int(meminfo[2].split()[1]) * 1024
-    mem_used = mem_total - mem_free
+    # 2. Использование RAM
+    mem = psutil.virtual_memory()
+    ram_info = {
+        'total': f"{mem.total / (1024 ** 3):.2f} GB",
+        'free': f"{mem.available / (1024 ** 3):.2f} GB",
+        'used': f"{mem.used / (1024 ** 3):.2f} GB",
+        'percent': f"{mem.percent}%"
+    }
 
-    # 3. CPU загрузка
-    t1, i1 = read_cpu_usage()
-    time.sleep(0.1)
-    t2, i2 = read_cpu_usage()
-    cpu_usage = 100 * ((t2 - t1) - (i2 - i1)) / (t2 - t1)
+    # 3. Загрузка CPU (средняя за последнюю минуту)
+    cpu_percent = psutil.cpu_percent(interval=1)
 
-    # 4. Аптайм
-    uptime_str, uptime_days = get_uptime()
+    # 4. Аптайм системы
+    boot_time = psutil.boot_time()
+    uptime_seconds = time.time() - boot_time
+    uptime_str = time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
 
     return {
-        'ssd [GB]': {
-            'used': f"{used / (1024 ** 3):.2f}",
-            'free': f"{free / (1024 ** 3):.2f}",
-            'total': f"{total / (1024 ** 3):.2f}",
-        },
-        'ram [GB]': {
-            'used': f"{mem_used / (1024 ** 3):.2f}",
-            'free': f"{mem_free / (1024 ** 3):.2f}",
-            'total': f"{mem_total / (1024 ** 3):.2f}",               
-        },
-        'cpu': f"{cpu_usage:.1f}%",
-        'uptime': f"{uptime_days} дней {uptime_str}"
+        'disk': disk_info,
+        'ram': ram_info,
+        'cpu': f"{cpu_percent}%",
+        'uptime': f"{int(uptime_seconds // 86400)} дней {uptime_str}"
     }
 
 def fmt_sysinfo(info):
     # Цвета
     HEADER_COLOR = "\x0312"   # Светло-синий (для заголовков)
-    VALUE_COLOR = "\x0309"     # Светло-зелёный (для значений)
-    RESET = "\x0F"             # Сброс цвета
+    VALUE_COLOR = "\x0309"    # Светло-зелёный (для значений)
+    RESET = "\x0F"            # Сброс цвета
 
     # Форматируем SSD
-    ssd = info['ssd [GB]']
-    ssd_line = f"{HEADER_COLOR}SSD [GB]:{RESET} {VALUE_COLOR}{ssd['used']}/{ssd['free']}/{ssd['total']}{RESET}"
+    ssd = info['disk']
+    ssd_line = f"{HEADER_COLOR}SSD [GB]:{RESET} {VALUE_COLOR}{ssd['used']}({ssd['percent']})/{ssd['free']}/{ssd['total']}{RESET}"
 
     # Форматируем RAM
-    ram = info['ram [GB]']
-    ram_line = f"{HEADER_COLOR}RAM [GB]:{RESET} {VALUE_COLOR}{ram['used']}/{ram['free']}/{ram['total']}{RESET}"
+    ram = info['ram']
+    ram_line = f"{HEADER_COLOR}RAM [GB]:{RESET} {VALUE_COLOR}{ram['used']}({ram['percent']})/{ram['free']}/{ram['total']}{RESET}"
 
     # CPU и аптайм — простое форматирование
     cpu_line = f"{HEADER_COLOR}CPU [N%]:{RESET} {VALUE_COLOR}{info['cpu']}{RESET}"
@@ -76,8 +59,8 @@ def fmt_sysinfo(info):
     return [ssd_line, ram_line, cpu_line, uptime_line]
 
 # Пример использования
-# if __name__ == "__main__":
-#     sys_info = get_sysinfo()
-#     formatted_lines = fmt_sysinfo(sys_info)
-#     for line in formatted_lines:
-#         print(line)
+if __name__ == "__main__":
+    sys_info = get_sysinfo()
+    formatted_lines = fmt_sysinfo(sys_info)
+    for line in formatted_lines:
+        print(line)
