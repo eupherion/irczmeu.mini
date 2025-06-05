@@ -53,14 +53,14 @@ def fmt_sysinfo(info):
 
     # CPU и аптайм — простое форматирование
     cpu_line = f"{HEADER_COLOR}CPU [N%]:{RESET} {VALUE_COLOR}{info['cpu']}{RESET}"
-    uptime_line = f"{HEADER_COLOR}SystemUp:{RESET} {VALUE_COLOR}{info['uptime']}{RESET}"
+    uptime_line = f"{HEADER_COLOR}Uptime  :{RESET} {VALUE_COLOR}{info['uptime']}{RESET}"
 
     # Объединяем всё в список строк
     return [ssd_line, ram_line, cpu_line, uptime_line]
 
 # Пример использования
-if __name__ == "__main__":
-    sys_info = get_sysinfo()
-    formatted_lines = fmt_sysinfo(sys_info)
-    for line in formatted_lines:
-        print(line)
+# if __name__ == "__main__":
+#     sys_info = get_sysinfo()
+#     formatted_lines = fmt_sysinfo(sys_info)
+#     for line in formatted_lines:
+#         print(line)

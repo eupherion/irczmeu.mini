@@ -13,4 +13,4 @@ ircBotCsym = "!"
 ircBotRcon = ""
 ircBotDccv = "VERSION PyIRC Bot"
 ircBotChan = [ "#test", "#rand",]
-ircBotAdmi = [ "BotMaster1", "admi",]
+ircBotAdmi = [ "PyBotAdmin", "admi",]

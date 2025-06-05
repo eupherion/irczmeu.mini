@@ -8,17 +8,17 @@ import re
 import os
 import importlib.util
 
-from conf import Config, config_load
+from conf import config_load
 
 # ==============================
 # Класс для парсинга префиксов IRC сообщений
 # ==============================
 class IRCPrefix:
     def __init__(self, raw_prefix: str):
-        self.raw = raw_prefix
-        self.nick = ""
-        self.ident = ""
-        self.host = ""
+        self.raw = raw_prefix # Полный префикс IRC сообщения
+        self.nick = "" # Ник отправителя IRC сообщения  
+        self.ident = "" # Идентификатор отправителя IRC сообщения
+        self.host = "" # Хост отправителя IRC сообщения
 
         if "!" in self.raw and "@" in self.raw:
             nick_part, host_part = raw_prefix.split("@", 1)
@@ -51,12 +51,12 @@ class IRCPrefix:
 # ==============================
 class IRCMessage:
     def __init__(self, raw_line: str):
-        self.raw = raw_line.strip()
-        self.prefix = IRCPrefix("")
-        self.command = ""
-        self.params = []
-        self.trailing = ""
-        self._parse()
+        self.raw: str = raw_line.strip() # Строка с полным сообщением
+        self.prefix = IRCPrefix("") # Префикс сообщения
+        self.command = "" # Команда IRC сообщения (например PRIVMSG)
+        self.params = [] # Параметры IRC сообщения (например список каналов)
+        self.trailing = "" # Трейлинг IRC сообщения (например сообщение)
+        self._parse() # Парсинг сообщения
 
     def _parse(self):
         line = self.raw
@@ -97,7 +97,9 @@ class Bot:
         self.sock = None
         self.commands_dir = "commands"
         self.loaded_commands = {}
+        self.command_descriptions = {}  # <-- новый словарь для описаний
         self.auth_rusnetns = False
+        self.time_connect = 0.0
         # Регистрируем выход из программы при завершении
         atexit.register(self.on_exit)
 
@@ -140,9 +142,33 @@ class Bot:
                 if hasattr(module, "handle"):
                     command_name = module_name.lower()
                     self.loaded_commands[command_name] = module.handle
+
+                    # Читаем docstring у handle
+                    description = module.handle.__doc__
+                    self.command_descriptions[command_name] = description.strip() if description else "No description available"
+
                     print(f"[+] Loaded command: .{command_name}")
                 else:
                     print(f"[!] Module {module_name} has no 'handle' function. Skipping.")
+
+    # def handle_command(self, msg):
+    #     """Обработка команды"""
+    #     if not msg.trailing.startswith(self.config.csym):
+    #         return
+
+    #     raw_command = msg.trailing[len(self.config.csym):]
+    #     parts = raw_command.split(" ", 1)
+    #     cmd_name = parts[0].lower()
+    #     args = parts[1].split() if len(parts) > 1 else []
+
+    #     handler = self.loaded_commands.get(cmd_name)
+    #     if handler:
+    #         try:
+    #             handler(self, msg, args, admin_cmd = True)
+    #         except Exception as e:
+    #             print(f"[!] Error executing command .{cmd_name}: {e}")
+    #     else:
+    #         print(f"[CMD] Unknown command: .{cmd_name}")
 
     def handle_command(self, msg):
         """Обработка команды"""
@@ -154,10 +180,24 @@ class Bot:
         cmd_name = parts[0].lower()
         args = parts[1].split() if len(parts) > 1 else []
 
+        # Обработка .help
+        if cmd_name == "help":
+            help_title = "Available commands:"
+            target = msg.params[0] if msg.params[0] != self.config.nick else msg.prefix.nick
+            self.send("PRIVMSG", target, f":{help_title}")
+            # Перечисляем команды и отправляем пользователю
+            for name in sorted(self.loaded_commands.keys()):
+                desc = self.command_descriptions.get(name, "No description available")
+                self.send("PRIVMSG", target, f":{self.config.csym}{name} - {desc}")
+                
+            print(f"[HELP] Sent help to {target}")
+            return
+
+        # Обработка обычных команд
         handler = self.loaded_commands.get(cmd_name)
         if handler:
             try:
-                handler(self, msg, args)
+                handler(self, msg, args, admin_cmd=True)
             except Exception as e:
                 print(f"[!] Error executing command .{cmd_name}: {e}")
         else:
@@ -177,6 +217,7 @@ class Bot:
             self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             self.sock.connect((self.config.host, self.config.port))
             print(f"[+] Connected to {self.config.host}:{self.config.port}")
+            self.time_connect = time.time()
         except Exception as e:
             print(f"[!] Connection error: {e}")
             sys.exit(1)
@@ -188,6 +229,29 @@ class Bot:
         # Отправка сообщения с префиксом и переводом строки
         print(f">>> {message}")
         self.sock.sendall((message + "\r\n").encode('utf-8'))
+
+    def send(self, command, *params):
+        """
+        Отправляет IRC-команду через сокет.
+        Пример: bot.send("PRIVMSG", "#channel", ":Hello world")
+        """
+        trailing = ""
+        if params and params[-1].startswith(":"):
+            trailing = params[-1]
+            params = params[:-1]
+
+        if trailing:
+            line = f"{command} {' '.join(params)} {trailing}"
+        else:
+            line = f"{command} {' '.join(params)}"
+        try:
+            if self.sock is None:
+                print(f"[!] Cannot send message [{line}] : socket is not connected.")
+                return
+            print(f">>> {line}")
+            self.sock.sendall((line + "\r\n").encode("utf-8"))
+        except Exception as e:
+            print(f"[ERROR] Failed to send message: {e}")
 
     def register(self):
         """Регистрация бота на сервере"""

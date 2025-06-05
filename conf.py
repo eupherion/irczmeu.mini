@@ -20,7 +20,7 @@ class Config:
         self.chan = config_dict.get("ircClient", {}).get("ircBotChan", [])
         self.admi = config_dict.get("ircClient", {}).get("ircBotAdmi", [])
 
-    def save(self):
+    def save(self, save_path=None):
         """Сохраняет текущие значения в файл"""
         data = {
             "ircServer": {
@@ -42,10 +42,13 @@ class Config:
             }
         }
 
-        with open(self.config_path, "w") as f:
+        # Если save_path не передан, используем путь по умолчанию
+        save_path = save_path or self.config_path
+
+        with open(save_path, "w") as f:
             toml.dump(data, f)
 
-        print(f"[CONF] Saving config to {self.config_path}")
+        print(f"[CONF] Saving config to {save_path}")
 
     def print_config(self):
         # Максимальная длина строки до двоеточия
