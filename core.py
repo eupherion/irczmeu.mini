@@ -151,25 +151,6 @@ class Bot:
                 else:
                     print(f"[!] Module {module_name} has no 'handle' function. Skipping.")
 
-    # def handle_command(self, msg):
-    #     """Обработка команды"""
-    #     if not msg.trailing.startswith(self.config.csym):
-    #         return
-
-    #     raw_command = msg.trailing[len(self.config.csym):]
-    #     parts = raw_command.split(" ", 1)
-    #     cmd_name = parts[0].lower()
-    #     args = parts[1].split() if len(parts) > 1 else []
-
-    #     handler = self.loaded_commands.get(cmd_name)
-    #     if handler:
-    #         try:
-    #             handler(self, msg, args, admin_cmd = True)
-    #         except Exception as e:
-    #             print(f"[!] Error executing command .{cmd_name}: {e}")
-    #     else:
-    #         print(f"[CMD] Unknown command: .{cmd_name}")
-
     def handle_command(self, msg):
         """Обработка команды"""
         if not msg.trailing.startswith(self.config.csym):
@@ -189,6 +170,7 @@ class Bot:
             for name in sorted(self.loaded_commands.keys()):
                 desc = self.command_descriptions.get(name, "No description available")
                 self.send("PRIVMSG", target, f":{self.config.csym}{name} - {desc}")
+                time.sleep(0.5)
                 
             print(f"[HELP] Sent help to {target}")
             return
