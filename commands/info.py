@@ -31,4 +31,5 @@ def handle(bot, msg, args, admin_cmd):
         bot.send("PRIVMSG", target, f":{line}")
         time.sleep(0.5)
     
-    bot.send("PRIVMSG", {target}, f":{HEADER_COLOR}Online  :{RESET} {VALUE_COLOR}{formatted_time}{RESET}")
+    print(f"[INFO] Online: {formatted_time}")
+    bot.send("PRIVMSG", target, f":{HEADER_COLOR}Online  :{RESET} {VALUE_COLOR}{formatted_time}{RESET}")
