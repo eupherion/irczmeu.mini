@@ -1,7 +1,7 @@
 # commands/admi.py
 def handle(bot, msg, args, admin_cmd):
     """
-    Shows the admins or adds/removes admins.
+    Shows or adds/removes admins: .admi add | del
     """
     target = msg.params[0] if msg.params[0].startswith('#') else msg.prefix.nick
     if admin_cmd:
@@ -25,6 +25,6 @@ def handle(bot, msg, args, admin_cmd):
                     bot.send("PRIVMSG", target, f":Usage: .admi [add|del] <nick>")
                 break
         else:
-            bot.send("PRIVMSG", target, f":You are not admin.")
+            bot.send("PRIVMSG", target, f":{msg.pefix.nick}, you are not admin.")
     else:
         bot.send("PRIVMSG", target, f":Admin rights are required for this command.")

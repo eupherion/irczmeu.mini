@@ -28,7 +28,7 @@ def handle(bot, msg, args, admin_cmd):
 
     target = msg.params[0] if msg.params[0].startswith('#') else msg.prefix.nick
     for line in formatted_lines:
-        bot.send_raw(f"PRIVMSG {target} :{line}")
+        bot.send("PRIVMSG", target, f":{line}")
         time.sleep(0.5)
     
-    bot.send_raw(f"PRIVMSG {target} :{HEADER_COLOR}Online  :{RESET} {VALUE_COLOR}{formatted_time}{RESET}")
+    bot.send("PRIVMSG", {target}, f":{HEADER_COLOR}Online  :{RESET} {VALUE_COLOR}{formatted_time}{RESET}")

@@ -12,5 +12,5 @@ def handle(bot, msg, args, admin_cmd):
                 bot.send("QUIT", reason)
                 bot.exit(0, reason)
         else:
-            bot.send("PRIVMSG", target, f":{msg.prefix.nick} You are not an admin!")
+            bot.send("PRIVMSG", target, f":{msg.prefix.nick}, you are not an admin!")
             return

@@ -18,7 +18,7 @@ def handle(bot, msg, args, admin_cmd):
                         time.sleep(0.5)
                 break
             else:
-                bot.send("PRIVMSG", target, f":You are not an admin")
+                bot.send("PRIVMSG", target, f":{msg.prefix.nick}, you are not an admin.")
                 return
     else:
         bot.send("PRIVMSG", target, f":Part {chans}")

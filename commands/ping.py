@@ -5,7 +5,7 @@ from ping3 import ping
 
 def handle(bot, msg, args, admin_cmd):
     """
-    Send a ping to a specified host or to the bot's host.
+    Ping host: .ping <host> | .ping (ping to irc server)
     """
     target = msg.params[0] if msg.params[0].startswith('#') else msg.prefix.nick
     if args:
