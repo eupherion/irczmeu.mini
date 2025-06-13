@@ -57,7 +57,15 @@ def get_sysinfo():
     # 3. Загрузка CPU (средняя за последнюю минуту)
     cpu_percent = psutil.cpu_percent(interval=1)
 
-    # 4. Аптайм системы
+    # 4. Температура процессора (можно добавить через psutil.sensors_temperatures(), если доступно)
+    cpu_temp = None
+    for name, entries in psutil.sensors_temperatures().items():
+        for entry in entries:
+            if entry.current is not None:
+                cpu_temp = entry.current
+    
+
+    # 5. Аптайм системы
     boot_time = psutil.boot_time()
     uptime_seconds = time.time() - boot_time
     uptime_str = time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
@@ -66,6 +74,7 @@ def get_sysinfo():
         'disk': disk_info,
         'ram': ram_info,
         'cpu': f"{cpu_percent}%",
+        'cpu_temp': f"{cpu_temp}°C" if cpu_temp is not None else "N/A",
         'uptime': f"{int(uptime_seconds // 86400)} дней {uptime_str}"
     }
 
@@ -85,7 +94,8 @@ def fmt_sysinfo(info):
 
     # CPU и аптайм — простое форматирование
     cpu_line = f"{HEADER_COLOR}CPU [N%]:{RESET} {VALUE_COLOR}{info['cpu']}{RESET}"
+    cpu_temp_line = f"{HEADER_COLOR}CPU Temp:{RESET} {VALUE_COLOR}{info['cpu_temp']}{RESET}"
     uptime_line = f"{HEADER_COLOR}Uptime  :{RESET} {VALUE_COLOR}{info['uptime']}{RESET}"
 
     # Объединяем всё в список строк
-    return [ssd_line, ram_line, cpu_line, uptime_line]
+    return [ssd_line, ram_line, cpu_line, cpu_temp_line, uptime_line]
