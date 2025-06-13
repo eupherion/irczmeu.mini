@@ -142,5 +142,6 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 
-# Dvelopment temp files
+# Temporary dirs for dev files
 devconfigs/
+conftemp/
