@@ -1,6 +1,7 @@
 # commands/info.py
 import time
 import psutil
+import platform
 from datetime import timedelta
 # from mods.sysinfo import get_sysinfo, fmt_sysinfo
 
@@ -10,9 +11,9 @@ def handle(bot, msg, args, admin_cmd):
     Shows system and uptime information.
     """
     # Цвета
-    HEADER_COLOR = "\x0312"   # Светло-синий (для заголовков)
-    VALUE_COLOR = "\x0309"    # Светло-зелёный (для значений)
-    RESET = "\x0F"            # Сброс цвета
+    header_color = "\x0312"   # Светло-синий (для заголовков)
+    value_color = "\x0309"    # Светло-зелёный (для значений)
+    reset_color = "\x0F"            # Сброс цвета
 
     sys_info = get_sysinfo()
     formatted_lines = fmt_sysinfo(sys_info)
@@ -33,7 +34,7 @@ def handle(bot, msg, args, admin_cmd):
         time.sleep(0.5)
     
     print(f"[INFO] Online: {formatted_time}")
-    bot.send("PRIVMSG", target, f":{HEADER_COLOR}Online  :{RESET} {VALUE_COLOR}{formatted_time}{RESET}")
+    bot.send("PRIVMSG", target, f":{header_color}Online  :{reset_color} {value_color}{formatted_time}{reset_color}")
 
 def get_sysinfo():
     # 1. Свободное место на диске (корневая ФС)
@@ -58,11 +59,15 @@ def get_sysinfo():
     cpu_percent = psutil.cpu_percent(interval=1)
 
     # 4. Температура процессора (можно добавить через psutil.sensors_temperatures(), если доступно)
-    cpu_temp = None
-    for name, entries in psutil.sensors_temperatures().items():
-        for entry in entries:
-            if entry.current is not None:
-                cpu_temp = entry.current
+    if platform.machine() == 'aarch64':  # Например, для Raspberry Pi
+        cpu_temp = None
+        if psutil.sensors_temperatures():
+            for name, entries in psutil.sensors_temperatures().items():
+                for entry in entries:
+                    if entry.current is not None:
+                        cpu_temp = entry.current
+    else:
+        cpu_temp = None
     
 
     # 5. Аптайм системы
@@ -80,22 +85,22 @@ def get_sysinfo():
 
 def fmt_sysinfo(info):
     # Цвета
-    HEADER_COLOR = "\x0312"   # Светло-синий (для заголовков)
-    VALUE_COLOR = "\x0309"    # Светло-зелёный (для значений)
-    RESET = "\x0F"            # Сброс цвета
+    header_color = "\x0312"   # Светло-синий (для заголовков)
+    value_color = "\x0309"    # Светло-зелёный (для значений)
+    reset_color = "\x0F"            # Сброс цвета
 
     # Форматируем SSD
     ssd = info['disk']
-    ssd_line = f"{HEADER_COLOR}SSD [GB]:{RESET} {VALUE_COLOR}{ssd['used']}({ssd['percent']})/{ssd['free']}/{ssd['total']}{RESET}"
+    ssd_line = f"{header_color}SSD [GB]:{reset_color} {value_color}{ssd['used']}({ssd['percent']})/{ssd['free']}/{ssd['total']}{reset_color}"
 
     # Форматируем RAM
     ram = info['ram']
-    ram_line = f"{HEADER_COLOR}RAM [GB]:{RESET} {VALUE_COLOR}{ram['used']}({ram['percent']})/{ram['free']}/{ram['total']}{RESET}"
+    ram_line = f"{header_color}RAM [GB]:{reset_color} {value_color}{ram['used']}({ram['percent']})/{ram['free']}/{ram['total']}{reset_color}"
 
     # CPU и аптайм — простое форматирование
-    cpu_line = f"{HEADER_COLOR}CPU [N%]:{RESET} {VALUE_COLOR}{info['cpu']}{RESET}"
-    cpu_temp_line = f"{HEADER_COLOR}CPU Temp:{RESET} {VALUE_COLOR}{info['cpu_temp']}{RESET}"
-    uptime_line = f"{HEADER_COLOR}Uptime  :{RESET} {VALUE_COLOR}{info['uptime']}{RESET}"
+    cpu_line = f"{header_color}CPU [N%]:{reset_color} {value_color}{info['cpu']}{reset_color}"
+    cpu_temp_line = f"{header_color}CPU Temp:{reset_color} {value_color}{info['cpu_temp']}{reset_color}"
+    uptime_line = f"{header_color}Uptime  :{reset_color} {value_color}{info['uptime']}{reset_color}"
 
     # Объединяем всё в список строк
     return [ssd_line, ram_line, cpu_line, cpu_temp_line, uptime_line]

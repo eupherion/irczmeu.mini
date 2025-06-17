@@ -144,4 +144,5 @@ cython_debug/
 
 # Temporary dirs for dev files
 devconfigs/
+devconfs/
 conftemp/

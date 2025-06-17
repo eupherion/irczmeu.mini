@@ -1,4 +1,4 @@
-# commands/time.py
+# commands/tnow.py
 from datetime import datetime
 
 def handle(bot, msg, args, admin_cmd):
