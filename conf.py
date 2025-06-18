@@ -62,7 +62,7 @@ class Config:
             len("Nickserv Password"),
             len("Auto Connect"),
             len("Command Symbol"),
-            len("Run on connsect"),
+            len("Run on connect"),
             len("DCC Version"),
             len("Channels"),
             len("Admins"),

@@ -18,6 +18,6 @@ def handle(bot, msg, args, admin_cmd):
             return
     else:
         if not bot.config.acon:
-            bot.send("PRIVMSG", target, f":Bot is not cofigured for autoreconnect!")
+            bot.send("PRIVMSG", target, f":Bot is not configured for autoreconnect!")
         if not admin_cmd:
             bot.send("PRIVMSG", target, f":Seems you are not admin! Sorry...")
