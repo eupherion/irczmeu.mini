@@ -91,6 +91,10 @@ class IRCMessage:
             f"params={self.params} trailing='{self.trailing}'>"
         )
 
+
+
+
+
 class Bot:
     def __init__(self, config_path):
         self.config = config_load(config_path)
@@ -103,10 +107,11 @@ class Bot:
         # Регистрируем выход из программы при завершении
         atexit.register(self.on_exit)
 
-    def exit(self, code=0, reason=""):
+    @staticmethod
+    def bot_quit(code=0, reason=""):
         if reason:
             print(f"[INFO] Exiting with reason: {reason}")
-        sys.exit(code)
+            sys.exit(code)
 
     def on_exit(self):
         print("[INFO] Saving configuration before exit...")

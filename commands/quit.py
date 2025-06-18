@@ -1,4 +1,4 @@
-# commands/quit.py
+# commands/bot_quit.py
 def handle(bot, msg, args, admin_cmd):
     """
     Quit the bot: .quit <reason>
@@ -10,7 +10,7 @@ def handle(bot, msg, args, admin_cmd):
             if admin_nick in msg.prefix.nick:
                 bot.send("PRIVMSG", target, f":{msg.prefix.nick} I'm quitting: {reason}")
                 bot.send("QUIT", reason)
-                bot.exit(0, reason)
+                bot.bot_quit(0, reason)
         else:
             bot.send("PRIVMSG", target, f":{msg.prefix.nick}, you are not an admin!")
             return
