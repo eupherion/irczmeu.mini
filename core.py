@@ -313,9 +313,8 @@ class Bot:
                                 self.send_raw(f"Nickserv :IDENTIFY {self.config.nspw}")
                             else:
                                 self.send_raw(f"PRIVMSG Nickserv :IDENTIFY {self.config.nspw}")
-                        else:
-                            for chan in self.config.chan:
-                                self.send_raw(f"JOIN {chan}")
+                        for chan in self.config.chan:
+                            self.send_raw(f"JOIN {chan} :")
 
                     # Success auth
                     if msg.command == "NOTICE" and msg.prefix.nick == "NickServ":
