@@ -304,16 +304,24 @@ class Bot:
 
                     # MOTD finish
                     if msg.command == "375":
+                        time.sleep(0.5)
                         print("[+] Connected to the server!")
+                        if not self.config.nspw:
+                            for chan in self.config.chan:
+                                time.sleep(0.5)
+                                self.send_raw(f"JOIN {chan}")
 
                     # Auth via NickServ
-                    if msg.command in ("376", "422"):
+                    if msg.command in ("376" or "422"):
                         if self.config.nspw:
+                            print("[+] Authenticating via NickServ...")
                             if self.auth_rusnetns:
                                 self.send_raw(f"Nickserv :IDENTIFY {self.config.nspw}")
                             else:
                                 self.send_raw(f"PRIVMSG Nickserv :IDENTIFY {self.config.nspw}")
+                        print("[+] Joining channels...")
                         for chan in self.config.chan:
+                            time.sleep(0.5)
                             self.send_raw(f"JOIN {chan} :")
 
                     # Success auth
