@@ -152,7 +152,7 @@ class Bot:
                     description = module.handle.__doc__
                     self.command_descriptions[command_name] = description.strip() if description else "No description available"
 
-                    print(f"[+] Loaded command: .{command_name}")
+                    print(f"[+] Loaded command: {self.config.csym}{command_name}")
                 else:
                     print(f"[!] Module {module_name} has no 'handle' function. Skipping.")
 
@@ -186,9 +186,9 @@ class Bot:
             try:
                 handler(self, msg, args, admin_cmd=True)
             except Exception as e:
-                print(f"[!] Error executing command .{cmd_name}: {e}")
+                print(f"[!] Error executing command {self.config.csym}{cmd_name}: {e}")
         else:
-            print(f"[CMD] Unknown command: .{cmd_name}")
+            print(f"[CMD] Unknown command: {self.config.csym}{cmd_name}")
 
     def connect(self):
         """Подключение к серверу"""

@@ -3,7 +3,6 @@ import time
 import psutil
 import platform
 from datetime import timedelta
-# from mods.sysinfo import get_sysinfo, fmt_sysinfo
 
 
 def handle(bot, msg, args, admin_cmd):
