@@ -8,8 +8,8 @@
 
 #### Установка:
 ```bash
-git clone https://github.com/aeshmann/irc.bot.zmeu
-cd irc.bot.zmeu
+git clone https://github.com/aeshmann/irczmeu.mini
+cd irczmeu.mini
 python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
