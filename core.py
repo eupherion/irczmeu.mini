@@ -99,7 +99,7 @@ class Bot:
     def __init__(self, config_path):
         self.config = config_load(config_path)
         self.sock = None
-        self.commands_dir = "commands"
+        self.commands_dir = "cmd"
         self.loaded_commands = {}
         self.command_descriptions = {}  # <-- новый словарь для описаний
         self.auth_rusnetns = False

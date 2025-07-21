@@ -129,7 +129,8 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
-# PyCharm
+# IntelliJ Platform
+.iml
 .idea/
 .gigaide/
 
@@ -143,6 +144,5 @@ cython_debug/
 .pypirc
 
 # Temporary dirs for dev files
-devconfigs/
-devconfs/
-conftemp/
+dev/
+tmp/
