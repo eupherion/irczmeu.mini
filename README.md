@@ -15,13 +15,13 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-> ⚙️ Настройки бота находятся в файле `./botconfigs/config.toml`.
+> ⚙️ Настройки бота находятся в файле `./cfg/config.toml`.
 #### Запуск:
 ```bash
-main.py # по умолчанию использует конфиг ./botconfigs/config.toml
+main.py # по умолчанию использует конфиг ./cfg/config.toml
 ```
 или 
 ```bash
-main.py ./botconfigs/rizon.toml # аргументом указать путь к конфигу
+main.py ./cfg/rizon.toml # аргументом указать путь к конфигу
 ```
 
