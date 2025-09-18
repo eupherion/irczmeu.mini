@@ -8,7 +8,7 @@
 
 #### Установка:
 ```bash
-git clone https://github.com/aeshmann/irczmeu.mini
+git clone git@github.com:eupherion/irczmeu.mini.git
 cd irczmeu.mini
 python -m venv .venv
 source .venv/bin/activate
